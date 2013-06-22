@@ -1,0 +1,4 @@
+/.sass-cache/
+*.scssc
+sftp-config.json
+*config.rb

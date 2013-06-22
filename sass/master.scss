@@ -1,0 +1,49 @@
+@import "colors";
+
+.main-header{
+    background-color: $headerBgColor;
+    margin-bottom: 40px;
+    padding: 10px 20px;
+
+    .session-info {
+        text-align: right;
+    }
+}
+
+h3 { margin: 0; }
+
+.user-list {
+    margin-top: 10px;
+    list-style: none;
+    margin-left: 0;
+
+    .user {
+        margin-bottom: 2px;
+
+        .username {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-size: x-small;
+            color: #777;
+        }
+
+        &:hover {
+            .actions {
+                visibility: visible;
+            }
+        }
+    }
+
+    .actions {
+        visibility: hidden;
+    }
+
+}
+
+.login-form {
+    .control-label {
+        text-align: left;
+    }
+}
