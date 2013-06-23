@@ -9,7 +9,7 @@ This is a personal case study of [Ted Mathew dela Cruz](http://tedmdelacruz.com)
 
 - Demonstration of prowess in Object-oriented programming.
 - Demonstration of Database abstraction in PHP using [PDO](http://php.net/manual/en/book.pdo.php)
-- Study on Facade design pattern, as inspired by Laravel
+- Study on [Facade](http://en.wikipedia.org/wiki/Facade_pattern) design pattern, as inspired by Laravel
 - Practical research on [SOLID](http://en.wikipedia.org/wiki/SOLID_(object-oriented_design\)) practice in OOP design.
 
 Installation
