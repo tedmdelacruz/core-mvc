@@ -14,7 +14,7 @@ class Asset
 
     private $assets = array();
 
-    public function add_asset($name, $asset)
+    public function add($name, $asset)
     {
         $this->assets[$name] = $asset;
     }

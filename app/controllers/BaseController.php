@@ -14,10 +14,10 @@ class BaseController extends Controller
     public function __construct()
     {
         // Declare the base assets
-        Asset::add_asset('bootstrap', 'assets/css/bootstrap.min.css');
-        Asset::add_asset('bootstrap-responsive', 'assets/css/bootstrap-responsive.min.css');
-        Asset::add_asset('master', 'assets/css/master.css');
-        Asset::add_asset('app', 'assets/js/app.js');
+        Asset::add('bootstrap', 'assets/css/bootstrap.min.css');
+        Asset::add('bootstrap-responsive', 'assets/css/bootstrap-responsive.min.css');
+        Asset::add('master', 'assets/css/master.css');
+        Asset::add('app', 'assets/js/app.js');
 
         $this->data['user'] = Auth::user();
 
