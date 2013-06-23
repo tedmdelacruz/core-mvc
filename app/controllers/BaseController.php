@@ -11,6 +11,9 @@ class BaseController extends Controller
      */
     public $data = array();
 
+    /**
+     * Add the assets and data to be shared across controllers
+     */
     public function __construct()
     {
         // Declare the base assets

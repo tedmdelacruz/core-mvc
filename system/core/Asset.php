@@ -14,16 +14,25 @@ class Asset
 
     private $assets = array();
 
+    /**
+     * Adds an asset to the assets list to be added with Asset::url()
+     * @param string $name  asset name
+     * @param string $asset asset file
+     */
     public function add($name, $asset)
     {
         $this->assets[$name] = $asset;
     }
 
+    /**
+     * Generates a url to the asset given
+     * @param  string $index  asset name
+     */
     public function url($index)
     {
         if(isset($this->assets[$index]))
         {
-            echo BASE_URL . $this->assets[$index];
+            echo base_url($this->assets[$index]);
         }
         else
         {
