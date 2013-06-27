@@ -1,4 +1,4 @@
-<?php Asset::add_asset('bootstrap', 'assets/css/bootstrap.min.css'); ?>
+<?php Asset::add('bootstrap', 'assets/css/bootstrap.min.css'); ?>
 <!doctype html>
 <html lang="en">
 <head>
