@@ -15,10 +15,14 @@ class Auth
     private static $users_table = '';
     private static $user_identifier = '';
 
-    public function __construct($users_table, $user_identifier)
+    /**
+     * Initialize the Auth
+     * @param Config $config Config instance for getting users table and user identifier
+     */
+    public function __construct(Config $config)
     {
-        self::$users_table = $users_table;
-        self::$user_identifier = $user_identifier;
+        self::$users_table = $config->auth->users_table;
+        self::$user_identifier = $config->auth->users_table;
     }
 
     /**
