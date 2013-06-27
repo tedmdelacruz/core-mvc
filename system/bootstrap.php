@@ -15,21 +15,18 @@ try
 
     \Facade::setAppInstance($app);
 
-    $app->config = function(){
+    $app->config = function($app){
         return new Config();
     };
 
     $app->router = function($app){
-        $controller = $app->config->get('config', 'default_controller');
-        $method = $app->config->get('config', 'default_method');
-
-        return new Router($controller, $method);
+        return new Router($app->config);
     };
 
     $app->db = function($app){
         if($app->config->isDefined('database'))
         {
-            return new DB($app->config->get('database'));
+            return new DB($app->config);
         }
 
         return null;
@@ -38,8 +35,7 @@ try
     $app->auth = function($app){
         if($app->config->isDefined('database'))
         {
-            return new Auth($app->config->get('auth', 'users_table'),
-                $app->config->get('auth', 'users_table'));
+            return new Auth($app->config);
         }
 
         return null;
@@ -61,6 +57,8 @@ try
         return new Hash();
     };
 
+    // Set the application instance to the Facade so that it knows where to resolve static functions in the global namespace
+    // to the Core namespace
     \Facade::setAppInstance($app);
 
     $app->start();
@@ -74,5 +72,5 @@ catch(\Exception $e)
 
     View::render('error', $error);
 
-    exit();
+    exit;
 }
