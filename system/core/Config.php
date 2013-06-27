@@ -12,7 +12,6 @@
  */
 class Config
 {
-
     private $config;
     private $database;
     private $auth;
@@ -22,19 +21,19 @@ class Config
      */
     public function __construct()
     {
-        $config_file          = CONFIG_DIR . 'config.php';
-        $database_config_file = CONFIG_DIR . 'database.php';
-        $auth_config_file     = CONFIG_DIR . 'auth.php';
+        require CONFIG_DIR . 'config.php';
+        require CONFIG_DIR . 'database.php';
+        require CONFIG_DIR . 'auth.php';
 
-        $this->config   = require_once $config_file;
-        $this->database = require_once $database_config_file;
-        $this->auth     = require_once $auth_config_file;
+        $this->config   = $config;
+        $this->database = $db;
+        $this->auth     = $auth;
     }
 
     /**
-     * Get config parameter from APP_PATH/config/config.php
+     * Get config parameter from APP_PATH/config/
      *
-     * @param  string $config target config file (auth, config, database)
+     * @param  string $config target config file (auth, config, database, ...)
      * @param  string $param  parameter to obtain (optional)
      * @return mixed  configuration parameter
      */

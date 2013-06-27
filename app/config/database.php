@@ -5,16 +5,12 @@
 |--------------------------------------------------------------------------
 |
 */
-return array(
+$db['host'] = 'localhost';
 
-    'host' => 'localhost',
+$db['db_name'] = 'core';
 
-    'db_name' => 'core',
+$db['username'] = 'root';
 
-    'username' => 'root',
+$db['password'] = '';
 
-    'password' => '',
-
-    'port' => ''
-
-);
+$db['port'] = '';
