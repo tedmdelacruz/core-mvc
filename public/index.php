@@ -82,7 +82,7 @@ require SYS_PATH.'autoload.php';
 
 /*
 |--------------------------------------------------------------------------
-| All systems go
+| Build the application
 |--------------------------------------------------------------------------
 */
-require SYS_PATH.'start.php';
+require SYS_PATH.'bootstrap.php';
