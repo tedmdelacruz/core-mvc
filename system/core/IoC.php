@@ -15,7 +15,7 @@ class IoC
 
     protected $objects = array();
 
-    public function __set($id, $closure)
+    public function __set($id, \Closure $closure)
     {
         $this->closures[$id] = $closure;
     }

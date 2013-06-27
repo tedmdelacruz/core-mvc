@@ -39,12 +39,21 @@ class Router
 
     /**
      * Initialize the Router
-     * @param string $controller the default fallback controller
-     * @param string $method     the default method (usually 'index')
+     * @param Config $config Config instance for getting default controller/method
      */
-    public function __construct($controller, $method)
+    public function __construct(Config $config)
     {
+        $controller = $config->get('config', 'default_controller');
+        $method = $config->get('config', 'default_method');
+
         $uri = $_SERVER['REQUEST_URI'];
+        print_r($_SERVER); die();
+        print_r(parse_url(baseUrl(), PHP_URL_PATH)); die();;
+        exit;
+
+        $baseUrl = \baseUrl();
+
+        exit(\stripProtocol($baseUrl));
 
         $this->method = $method;
 

@@ -55,15 +55,17 @@ class DB
     /**
      * Initialize the DB
      * @access public
-     * @param array $config
+     * @param Config $config Config instance for obtaining db parameters
      */
-    public function __construct($config)
+    public function __construct(Config $config)
     {
-        self::$host     = $config['host'];
-        self::$db_name  = $config['db_name'];
-        self::$username = $config['username'];
-        self::$password = $config['password'];
-        self::$port     = $config['port'];
+        $db = $config->get('database');
+
+        self::$host     = $db['host'];
+        self::$db_name  = $db['db_name'];
+        self::$username = $db['username'];
+        self::$password = $db['password'];
+        self::$port     = $db['port'];
     }
 
     public function connect()
