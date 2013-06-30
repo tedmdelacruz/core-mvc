@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * View
@@ -11,8 +11,22 @@
  * @link        http://core.tedmdelacruz.com
  *
  */
+
+namespace Core;
+
 class View
 {
+    /**
+     * Variables to be passed to the scope of the rendered view
+     * @var array
+     */
+    private $vars = array();
+
+    public function set($vars)
+    {
+        $this->vars = $vars;
+    }
+
     /**
      * Render
      *
@@ -21,16 +35,24 @@ class View
      * @param  string $view View file to be loaded in app/views
      * @param  array  $vars Variables to be passed to the view
      */
-    public static function render($view, $vars = array())
+    public function render($view, $vars = array())
     {
-
-        // Declare the variables
-        if( ! empty($vars)){
-
-            foreach ($vars as $var_name => $var_value) {
+        // Declare the variables set earlier with View::set()
+        if( ! empty($this->vars) )
+        {
+            foreach ($this->vars as $var_name => $var_value)
+            {
                 $$var_name = $var_value;
             }
+        }
 
+        // Declare the variables set with View::render()
+        if( ! empty($vars) )
+        {
+            foreach ($vars as $var_name => $var_value)
+            {
+                $$var_name = $var_value;
+            }
         }
 
         $view_file = VIEWS_DIR . $view . '.php';
@@ -42,7 +64,7 @@ class View
                 throw new Exceptions\CoreException("View not found: {$view_file}");
             }
 
-            include_once $view_file;
+            require_once $view_file;
         }
         catch(\Exception $e)
         {
