@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="<?php Asset::url('master') ?>">
 </head>
 <body>
-
     <?php View::render('default/header') ?>
 
     <div class="container">
@@ -21,9 +20,11 @@
 
            <div class="span4 offset3">
 
+              <?php View::render('widgets/alerts', array('error' => $error, 'success' => $success)) ?>
+
               <h3>Users</h3>
 
-              <a href="#" class="btn btn-small btn-primary">Create user</a>
+              <!-- <a href="#" class="btn btn-small btn-primary">Create user</a> -->
 
               <?php if ( ! empty($users)): ?>
 
