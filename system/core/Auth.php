@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * Auth
@@ -10,28 +10,37 @@
  * @copyright   Copyright (c) 2013 - 2014, Ted Mathew dela Cruz.
  * @link        http://core.tedmdelacruz.com
  */
+
+namespace Core;
+
 class Auth
 {
-    private static $users_table = '';
-    private static $user_identifier = '';
+    private $usersTable = '';
+    private $userIdentifier = '';
+
+    private $session;
+
+    private $db;
 
     /**
      * Initialize the Auth
      * @param Config $config Config instance for getting users table and user identifier
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, Session $session, DB $db)
     {
-        self::$users_table = $config->auth->users_table;
-        self::$user_identifier = $config->auth->users_table;
+        $this->usersTable = $config->get('auth', 'users_table');
+        $this->userIdentifier = $config->get('auth', 'user_identifier');
+        $this->session = $session;
+        $this->db = $db;
     }
 
     /**
      * Checks if user is logged in
      * @return boolean
      */
-    public static function is_logged_in()
+    public function isLoggedIn()
     {
-        if(Session::is_set(self::$user_identifier))
+        if($this->session->isRegistered($this->userIdentifier))
         {
             return true;
         }
@@ -43,11 +52,11 @@ class Auth
      * Gets the user logged in
      * @return mixed Returns User object if logged in, else returns null
      */
-    public static function user()
+    public function user()
     {
-        if(self::is_logged_in())
+        if($this->isLoggedIn())
         {
-            return Session::get_data(self::$user_identifier);
+            return $this->session->get_data($this->userIdentifier);
         }
 
         return null;
@@ -55,13 +64,22 @@ class Auth
 
     /**
      * Attempts to log in the user
-     * @param  string $user_identifier
+     * @param  string $userIdentifier
      * @param  string $password
      * @return boolean
      */
-    public static function login($user_identifier, $password)
+    public function login($userIdentifier, $password)
     {
-        DB::where('password', $password);
-        DB::get(self::$users_table);
+        $this->db->from($this->usersTable);
+        $this->db->where($this->userIdentifier, $userIdentifier);
+        $user = $this->db->getOne();
+
+        if( ! is_object($user) )
+        {
+            $this->session->setData('username', $user->username);
+            return TRUE;
+        }
+
+        return FALSE;
     }
 }
