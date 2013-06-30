@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * Database
@@ -8,188 +8,451 @@
  * @copyright   Copyright (c) 2013 - 2014, Ted Mathew dela Cruz.
  * @link        http://core.tedmdelacruz.com
  */
+
+namespace Core;
+
 class DB
 {
 
     private $config;
 
-    private static $PDO;
+    private $PDO;
 
-    private static $host;
-    private static $username;
-    private static $password;
-    private static $port;
-    private static $db_name;
+    private $host;
+    private $username;
+    private $password;
+    private $port;
+    private $dbName;
 
     /**
      * Sets database fetch type. Either Array or Object
      * @access private
      * @var int
      */
-    private static $fetch_type = \PDO::FETCH_OBJ;
+    private $fetchType = \PDO::FETCH_OBJ;
 
     /**
      * Current SQL string
-     * @static
      * @access private
      * @var string
      */
-    private static $sql = "";
+    private $sql = "";
 
     /**
      * SQL columns
-     * @static
      * @access private
      * @var string
      */
-    private static $columns = '*';
+    private $columns = '*';
 
     /**
-     * Where clause parameters for PDO binding
-     * @static
+     * SQL table
+     * @access private
+     * @var string
+     */
+    private $table = "";
+
+    /**
+     * SQL where column
+     * @var string
+     */
+    private $where = "";
+    /**
+     * Parameters for PDO binding
      * @access private
      * @var array
      */
-    private static $parameters = array();
+    private $parameters = array();
+
+    /**
+     * Regular Expression for matching SQL logical operators
+     * @var string
+     */
+    private $operators = '/(=)|(!=)|(<>)|(>=)|(<=)|(<)|(>)|(NOT IN)|(IN)|(IS NOT)|(IS)|(not in)|(in)|(is not)|(is)/';
 
     /**
      * Initialize the DB
      * @access public
      * @param Config $config Config instance for obtaining db parameters
+     * @param Log $log
      */
     public function __construct(Config $config)
     {
+        Log::trace(__METHOD__);
+
         $db = $config->get('database');
 
-        self::$host     = $db['host'];
-        self::$db_name  = $db['db_name'];
-        self::$username = $db['username'];
-        self::$password = $db['password'];
-        self::$port     = $db['port'];
+        $this->host     = $db['host'];
+        $this->dbName   = $db['db_name'];
+        $this->username = $db['username'];
+        $this->password = $db['password'];
+        $this->port     = $db['port'];
     }
 
     public function connect()
     {
-        if((bool) self::$PDO) return;
+        if( is_object($this->PDO) ) return $this->PDO;
 
-        $connection = "mysql:host=" . self::$host . ";dbname=" . self::$db_name;
+        try
+        {
+            $connection = "mysql:host=" . $this->host . ";dbname=" . $this->dbName;
+            Log::trace(__METHOD__, 'Connection: ' . $connection);
 
-        self::$PDO = new \PDO($connection, self::$username, self::$password);
-        self::$PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->PDO = new \PDO($connection, $this->username, $this->password);
+            $this->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        }
+        catch(\PDOException $e)
+        {
+            echo "Could not connect to the database. </br>";
+            echo $e->getMessage();
+            exit;
+        }
     }
 
     /**
      * Set the PDO fetch type
      *
-     * @static
      * @access  public
-     * @param   string $fetch_type 'object' or 'array'
+     * @param   string $fetchType 'object' or 'array'
      */
-    public static function set_fetch_type($fetch_type)
+    public function setFetchType($fetchType)
     {
-        if($fetch_type == 'array')
+        Log::trace(__METHOD__);
+
+        if($fetchType == 'array')
         {
-            self::$fetch_type = \PDO::FETCH_ARR;
+            $this->fetchType = \PDO::FETCH_ARR;
         }
         else
         {
-            self::$fetch_type = \PDO::FETCH_OBJ;
+            $this->fetchType = \PDO::FETCH_OBJ;
         }
     }
 
     /**
+     * Adds a parameter to the parameters list
+     * @param  string $field     field to compare with
+     * @param  mixed  $parameter (optional) PDO parameter bindings
+     */
+    public function addParameter($field, $parameter = NULL)
+    {
+        // Strip all operators in where column
+        $column = rtrim(preg_replace($this->operators, '', $field));
+
+        if( $parameter )
+        {
+            $this->parameters[$column] = $parameter;
+        }
+    }
+
+
+    /**
      * Prepare the SELECT clause
-     * @static
      * @access public
      * @param  string $columns
      */
-    public static function select($columns)
+    public function select($columns)
     {
-        self::$columns = $columns;
-        self::$sql .= "SELECT {$columns} ";
+        Log::trace(__METHOD__);
+
+        $this->columns = $columns;
+        $this->sql .= "SELECT {$columns} ";
     }
 
     /**
      * Prepare the WHERE clause and parameter bindings, if provided
+     * Adds an equal sign accordingly
      *
-     * DB::where('id', 1234);
-     * WHERE id = :id
+     * Ex:
+     *    DB::where('id', 1234);
+     *    WHERE id = :id
      *
-     * @static
      * @access public
-     * @param  string $where_col Where column
+     * @param  string $whereCol Where column
      * @param  mixed  $parameter (optional) PDO parameter bindings
+     * @return void
      */
-    public static function where($where_col, $parameter = null)
+    public function where($whereCol, $parameter = null)
     {
-        $where = 'WHERE ' . $where_col;
+        $where = 'WHERE ';
 
-        if((bool) $parameter)
+        $this->addParameter($whereCol, $parameter);
+
+        // Intelligently add the equal sign
+        if( ! preg_match($this->operators, $whereCol) )
         {
-            // Add the parameter to the params list, to be binded on execution
-            if(is_string($parameter))
-            {
-                self::$parameters[$where_col] = "'{$parameter}'";
-            }
-            else
-            {
-                self::$parameters[$where_col] = $parameter;
-            }
+            $whereCol .= ' = ';
         }
 
-        self::$sql .= $where;
+        $where .= $whereCol;
+
+        $this->where = $where . ' ' . $this->generateBindings(array_keys($this->parameters));
+
+        Log::trace(__METHOD__ , "[$this->where]");
     }
 
     /**
-     * Get records of a table
-     *
-     * @static
+     * Prepares a like condition
+     * @param  string $field    field to compare to
+     * @param  string $string   query string
+     * @param  string $wildcard (optional)[both, left, right] wildcard position(s)
+     * @return void
+     */
+    public function like($field, $string, $wildcard = NULL)
+    {
+        $this->where = "";
+
+        if( empty($this->where) )
+        {
+            $this->where = "WHERE ";
+        }
+        else
+        {
+            $this->where .= "AND ";
+        }
+
+        $this->addParameter($field, $string);
+
+        $this->where .= " {$field} LIKE " . $this->generateBindings(array_keys($this->parameters));
+
+        Log::trace(__METHOD__ , "[PARAMETERS: " . implode(',', $this->parameters) . "]");
+    }
+
+    /**
+     * Sets the table to be fetched from
      * @param  string $table
+     * @return void
+     */
+    public function from($table)
+    {
+        Log::trace(__METHOD__, "[$table]");
+
+        $this->table = $table;
+    }
+
+    /**
+     * Get records from a table
+     *
+     * @param  string $table (optional)
      * @access public
      * @return array  Array of objects
      */
-    public static function get($table)
+    public function get($table = NULL)
     {
-        $columns = self::$columns;
+        Log::trace(__METHOD__);
 
-        try {
+        // if table is not set, use the table set earlier with DB::from()
+        if( ! $table )
+        {
+            $table = $this->table;
+        }
 
-            $sql = "SELECT {$columns} FROM {$table}";
+        try
+        {
+            $sql = "SELECT {$this->columns} FROM {$table} ";
 
-            $statement = self::$PDO->prepare($sql);
-
-            if( ! empty(self::$parameters))
+            if( $this->where )
             {
-                $statement->execute(self::$parameters);
+                $sql .= $this->where;
+            }
+
+            $statement = $this->PDO->prepare($sql);
+
+            if( ! empty($this->parameters))
+            {
+                $statement->execute($this->parameters);
             }
             else
             {
                 $statement->execute();
             }
 
-            return $statement->fetchAll(self::$fetch_type);
+            $result = $statement->fetchAll($this->fetchType);
 
-        } catch(PDOException $e) {
-            throw new CoreException($e->getMessage());
+            $this->reset();
+
+            return $result;
+        }
+        catch(\PDOException $e)
+        {
+            throw new Exceptions\CoreException($e->getMessage());
         }
     }
 
     /**
-     * Debug
+     * Get one record from a table
      *
-     * @static
+     * @param  string $table (optional)
      * @access public
+     * @return array  Array of objects
      */
-    public static function debug()
+    public function getOne($table = NULL)
     {
-        $debug['debug']['host']       = self::$host;
-        $debug['debug']['db_name']    = self::$db_name;
-        $debug['debug']['username']   = self::$username;
-        $debug['debug']['password']   = self::$password;
-        $debug['debug']['sql']        = self::$sql;
-        $debug['debug']['columns']    = self::$columns;
-        $debug['debug']['parameters'] = self::$parameters;
+        if( ! $table )
+        {
+            $table = $this->table;
+        }
 
-        View::render('debug', $debug);
+        try
+        {
+            $sql = "SELECT {$this->columns} FROM {$table} ";
+
+            if( $this->where )
+            {
+                $sql .= $this->where;
+            }
+
+            $statement = $this->PDO->prepare($sql);
+
+            Log::trace(__METHOD__, "Executing SQL: $sql");
+            Log::trace(__METHOD__, "Parameter keys: " . implode(',', array_keys($this->parameters)));
+            Log::trace(__METHOD__, "Parameters: " . implode(',', $this->parameters));
+
+            if( ! empty($this->parameters))
+            {
+                $statement->execute($this->parameters);
+            }
+            else
+            {
+                $statement->execute();
+            }
+
+            $result = $statement->fetch($this->fetchType);
+
+            (is_object($result)
+                ? Log::trace(__METHOD__, "[ID:$result->id][USER:$result->username][PASS:$result->password]")
+                : Log::trace(__METHOD__, 'returned false'));
+
+            $this->reset();
+
+            return $result;
+        }
+        catch(\PDOException $e)
+        {
+            echo $e->getMessage(); exit;
+            throw new Exceptions\CoreException($e->getMessage());
+        }
     }
+
+    /**
+     * Inserts a record to the table
+     * @param  string  $table
+     * @param  array   $record
+     * @return boolean
+     */
+    public function insert($table, $record)
+    {
+        try
+        {
+            $sql = "INSERT INTO {$table} (" . implode(', ', array_keys($record));
+            $sql .= ') VALUES (' . $this->generateBindings(array_keys($record)) . ')';
+
+            Log::trace(__METHOD__, 'Executing SQL: ' . $sql);
+
+            $statement = $this->PDO->prepare($sql);
+
+            $statement->execute($record);
+
+            $this->reset();
+
+            return TRUE;
+
+        }
+        catch(\PDOException $e)
+        {
+            return FALSE;
+        }
+    }
+
+    public function query($sql, $parameters)
+    {
+        Log::trace(__METHOD__, 'Executing SQL: ' . $sql);
+        Log::trace(__METHOD__, "Parameter keys: " . implode(',', array_keys($parameters)));
+        Log::trace(__METHOD__, "Parameters: " . implode(',', $parameters));
+
+        $statement = $this->PDO->prepare($sql);
+
+        if( ! empty($parameters))
+        {
+            $statement->execute($parameters);
+        }
+        else
+        {
+            $statement->execute();
+        }
+
+        return $statement->fetchAll($this->fetchType);
+    }
+
+    /**
+     * Generates PDO parameter bindings
+     *
+     * Ex:
+     *     $fields = array('username', 'email')
+     *     returns ':username, :email'
+     *
+     * @param  array $fields array of fields to bind
+     * @return string        parameter bindings
+     */
+    private function generateBindings($fields)
+    {
+        // Add a colon to each field
+        array_walk($fields, function(&$field){
+            $field = ':' . $field . ' ';
+        });
+
+        $bindings = implode(', ', $fields);
+
+        Log::trace(__METHOD__, "[$bindings]");
+
+        return $bindings;
+    }
+
+    /**
+     * Returns the last inserted ID
+     * @param  string $name column name containing pk
+     * @return int
+     */
+    public function getLastInsertId($name = NULL)
+    {
+        $id = $this->PDO->lastInsertId($name);
+
+        Log::trace(__METHOD__, "[ID: $id]");
+
+        return $id;
+    }
+
+    /**
+     * Resets the main SQL components
+     * @return void
+     */
+    private function reset()
+    {
+        Log::trace(__METHOD__, "[SQL:$this->sql][COLS:$this->columns][TABLE:$this->table][WHERE:$this->where][PARAMS: ".implode(',', $this->parameters). "]");
+
+        $this->sql        = "";
+        $this->columns    = "*";
+        $this->table      = "";
+        $this->where      = "";
+
+        $this->parameters = array();;
+    }
+
+    public function test()
+    {
+        $sql = "SELECT * FROM users WHERE username = :username";
+        $parameters = array('username' => 'test1');
+        echo 'Executing SQL: ' . $sql . '<br/>';
+        echo "Parameter keys: " . implode(',', array_keys($parameters)) . '<br/>';
+        echo "Parameters: " . implode(',', $parameters) . '<br/>';
+
+        $statement = $this->PDO->prepare($sql);
+
+        $statement->execute($parameters);
+
+        $result = $statement->fetchAll($this->fetchType);
+
+        print_r($result); die();
+    }
+
 }
