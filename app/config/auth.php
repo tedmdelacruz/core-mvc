@@ -8,4 +8,4 @@
 
 $auth['users_table'] = 'users';
 
-$auth['users_identifier'] = 'username';
+$auth['user_identifier'] = 'username';

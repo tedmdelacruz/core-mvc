@@ -11,8 +11,7 @@
 | Base URL
 |--------------------------------------------------------------------------
 */
-// http://localhost/core/public/
-$config['base_url'] = 'http://loasdfasdf';
+$config['base_url'] = 'http://localhost/core/public/';
 
 /*
 |--------------------------------------------------------------------------
