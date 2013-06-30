@@ -145,7 +145,6 @@ class DB
         }
     }
 
-
     /**
      * Prepare the SELECT clause
      * @access public
@@ -364,26 +363,6 @@ class DB
         }
     }
 
-    public function query($sql, $parameters)
-    {
-        Log::trace(__METHOD__, 'Executing SQL: ' . $sql);
-        Log::trace(__METHOD__, "Parameter keys: " . implode(',', array_keys($parameters)));
-        Log::trace(__METHOD__, "Parameters: " . implode(',', $parameters));
-
-        $statement = $this->PDO->prepare($sql);
-
-        if( ! empty($parameters))
-        {
-            $statement->execute($parameters);
-        }
-        else
-        {
-            $statement->execute();
-        }
-
-        return $statement->fetchAll($this->fetchType);
-    }
-
     /**
      * Generates PDO parameter bindings
      *
@@ -436,23 +415,6 @@ class DB
         $this->where      = "";
 
         $this->parameters = array();;
-    }
-
-    public function test()
-    {
-        $sql = "SELECT * FROM users WHERE username = :username";
-        $parameters = array('username' => 'test1');
-        echo 'Executing SQL: ' . $sql . '<br/>';
-        echo "Parameter keys: " . implode(',', array_keys($parameters)) . '<br/>';
-        echo "Parameters: " . implode(',', $parameters) . '<br/>';
-
-        $statement = $this->PDO->prepare($sql);
-
-        $statement->execute($parameters);
-
-        $result = $statement->fetchAll($this->fetchType);
-
-        print_r($result); die();
     }
 
 }
