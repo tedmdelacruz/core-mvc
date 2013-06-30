@@ -53,7 +53,7 @@ class Session
      */
     public function getData($identifier)
     {
-        if(self::is_set($identifier))
+        if(self::isRegistered($identifier))
         {
             return $_SESSION[$identifier];
         }
