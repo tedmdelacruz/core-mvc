@@ -72,24 +72,23 @@ abstract class Facade
         switch (count($args))
         {
             case 0:
-                $instance->$method(); break;
+                return $instance->$method(); break;
 
             case 1:
-                $instance->$method($args[0]); break;
+                return $instance->$method($args[0]); break;
 
             case 2:
-                $instance->$method($args[0], $args[1]); break;
+                return $instance->$method($args[0], $args[1]); break;
 
             case 3:
-                $instance->$method($args[0], $args[1], $args[2]); break;
+                return $instance->$method($args[0], $args[1], $args[2]); break;
 
             case 4:
-                $instance->$method($args[0], $args[1], $args[2], $args[3]); break;
+                return $instance->$method($args[0], $args[1], $args[2], $args[3]); break;
 
             default:
-                call_user_func_array(array($instance, $method), $args); break;
+                return call_user_func_array(array($instance, $method), $args); break;
         }
-
     }
 
 }
