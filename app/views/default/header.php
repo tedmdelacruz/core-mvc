@@ -14,7 +14,9 @@
             <a href="<?php echo baseUrl('user/login') ?>">Login</a> |
 
             <a href="<?php echo baseUrl('user/register') ?>">Register</a>
+
         <?php endif ?>
+
        </div>
 
      </div>
