@@ -42,24 +42,24 @@ class Auth
     {
         if($this->session->isRegistered($this->userIdentifier))
         {
-            return true;
+            return TRUE;
         }
 
-        return false;
+        return FALSE;
     }
 
     /**
-     * Gets the user logged in
+     * Gets the logged in user
      * @return mixed Returns User object if logged in, else returns null
      */
     public function user()
     {
         if($this->isLoggedIn())
         {
-            return $this->session->get_data($this->userIdentifier);
+            return $this->session->getData($this->userIdentifier);
         }
 
-        return null;
+        return NULL;
     }
 
     /**
@@ -72,14 +72,25 @@ class Auth
     {
         $this->db->from($this->usersTable);
         $this->db->where($this->userIdentifier, $userIdentifier);
+
         $user = $this->db->getOne();
 
-        if( ! is_object($user) )
+        if( is_object($user) )
         {
-            $this->session->setData('username', $user->username);
+            $this->session->setData($this->userIdentifier, $user->{$this->userIdentifier});
+
             return TRUE;
         }
 
         return FALSE;
+    }
+
+    /**
+     * Logs out the user
+     * @return void
+     */
+    public function logout()
+    {
+        $this->session->clear();
     }
 }

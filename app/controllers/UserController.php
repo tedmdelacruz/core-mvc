@@ -66,7 +66,7 @@ class UserController extends BaseController
                 // Attempt to login
                 Auth::login($user->username, $user->password);
 
-                Session::setFlashData('success', 'You have successfully registered.');
+                Session::setFlashData('success', 'You have successfully registered and logged in.');
 
                 Router::redirect('user');
             }
@@ -77,6 +77,15 @@ class UserController extends BaseController
         }
 
         View::render('user/register', $this->data);
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        Session::setFlashData('success', 'You have successfully logged out.');
+
+        Router::redirect('user');
     }
 
 }
