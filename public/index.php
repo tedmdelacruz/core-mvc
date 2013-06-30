@@ -15,74 +15,96 @@
 | Core system path
 |--------------------------------------------------------------------------
 */
-$system_path = '../system/';
+$systemPath = '../system/';
 
 /*
 |--------------------------------------------------------------------------
 | Core application path
 |--------------------------------------------------------------------------
 */
-$app_path = '../app/' ;
+$appPath = '../app/' ;
+
+/*
+|--------------------------------------------------------------------------
+| Vendors path
+|--------------------------------------------------------------------------
+*/
+$vendorsPath = '../vendor/' ;
 
 /*
 |--------------------------------------------------------------------------
 | Validate paths
 |--------------------------------------------------------------------------
 */
-if (realpath($system_path) !== FALSE)
+if ( FALSE !== realpath($systemPath) )
 {
-    $system_path = realpath($system_path).'/';
+    $systemPath = realpath($systemPath).'/';
 }
 else
 {
     exit('The system path seems to be not set correctly. Set it correctly in: '.__FILE__);
 }
 
-if (realpath($app_path) !== FALSE)
+if ( FALSE !== realpath($appPath))
 {
-    $app_path = realpath($app_path).'/';
+    $appPath = realpath($appPath).'/';
 }
 else
 {
     exit('The application path seems to be not set correctly. Set it correctly in: '.__FILE__);
 }
 
+if ( FALSE !== realpath($vendorsPath))
+{
+    $vendorsPath = realpath($vendorsPath).'/';
+}
+else
+{
+    exit('The vendors path seems to be not set correctly. Set it correctly in: '.__FILE__);
+}
+
 // Ensure there's a trailing slash
-$system_path = rtrim($system_path, '/').'/';
+$systemPath = rtrim($systemPath, '/').'/';
+
+$appPath = rtrim($appPath, '/').'/';
+
+$vendorsPath = rtrim($vendorsPath, '/').'/';
 
 /*
 |--------------------------------------------------------------------------
 | Define the global Core path constants
 |--------------------------------------------------------------------------
 */
-define('SYS_PATH', $system_path);
+define('SYS_PATH', $systemPath);
 
-define('APP_PATH', $app_path);
+define('APP_PATH', $appPath);
+
+define('VENDORS_DIR', $vendorsPath);
 
 /*
 |--------------------------------------------------------------------------
-| Setup more constants
+| Define more path constants
 |--------------------------------------------------------------------------
 */
-require SYS_PATH.'constants.php';
+require SYS_PATH . 'constants.php';
 
 /*
 |--------------------------------------------------------------------------
 | Core global functions
 |--------------------------------------------------------------------------
 */
-require SYS_PATH.'common.php';
+require SYS_PATH . 'common.php';
 
 /*
 |--------------------------------------------------------------------------
-| Initialize the class autoloader
+| Initialize the class autoloaders
 |--------------------------------------------------------------------------
 */
-require SYS_PATH.'autoload.php';
+require SYS_PATH . 'autoload.php';
 
 /*
 |--------------------------------------------------------------------------
 | Build the application
 |--------------------------------------------------------------------------
 */
-require SYS_PATH.'bootstrap.php';
+require SYS_PATH . 'build.php';
