@@ -3,16 +3,17 @@
      <div class="span3 pull-right">
 
        <div class="session-info">
-        <?php if (Auth::is_logged_in()): ?>
+        <?php if (Auth::isLoggedIn()): ?>
 
-            Hello, <a href="#">Admin</a> | <a href="<?php echo base_url('user/logout') ?>">Logout</a>
+            Hello, <a href="#">Admin</a> | <a href="<?php echo baseUrl('user/logout') ?>">Logout</a>
 
         <?php else: ?>
 
-            <a href="<?php echo base_url('user/login') ?>">Login</a> |
+            <a href="<?php echo baseUrl('user') ?>">Example</a> |
 
-            <a href="<?php echo base_url('user/register') ?>">Register</a>
+            <a href="<?php echo baseUrl('user/login') ?>">Login</a> |
 
+            <a href="<?php echo baseUrl('user/register') ?>">Register</a>
         <?php endif ?>
        </div>
 
