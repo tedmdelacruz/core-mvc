@@ -17,9 +17,18 @@
     <link rel="stylesheet" href="<?php Asset::url('bootstrap-responsive') ?>">
     <link rel="stylesheet" href="<?php Asset::url('master') ?>">
     <style>
-      body { padding-top: 120px; }
-      h1 { font-size: 65px; margin-bottom: 20px; color: #9d261d; }
-      p{ color: #777; font-size: medium;}
+        body { padding-top: 120px; }
+        h1 {
+            font-size: 120px;
+            margin-bottom: 40px;
+            color: #9d261d;
+            text-align: center;
+        }
+        p{
+            color: #777;
+            font-size: medium;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -28,6 +37,7 @@
             <div class="span12">
                 <h1><?php echo ($code == 0 ? 'Error' : $code) ?></h1>
                 <p><?php echo $message ?></p>
+                <p><a href="<?php echo baseUrl() ?>">Go back</a></p>
             </div>
         </div>
     </div>
