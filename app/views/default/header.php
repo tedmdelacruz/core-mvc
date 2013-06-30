@@ -3,9 +3,9 @@
      <div class="span3 pull-right">
 
        <div class="session-info">
-        <?php if (Auth::isLoggedIn()): ?>
+        <?php if ( Auth::isLoggedIn() ): ?>
 
-            Hello, <a href="#">Admin</a> | <a href="<?php echo baseUrl('user/logout') ?>">Logout</a>
+            Hello, <a href="#"><?php echo $username ?></a> | <a href="<?php echo baseUrl('user/logout') ?>">Logout</a>
 
         <?php else: ?>
 
