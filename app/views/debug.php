@@ -14,7 +14,6 @@
       ul li { margin-bottom: 10px; }
       .debug-list { margin-left: 0;}
       .value{ color: #777; font-size: medium;}
-
     </style>
 </head>
 <body>
