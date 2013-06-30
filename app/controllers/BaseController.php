@@ -34,6 +34,11 @@ class BaseController extends Core\Controller
         $this->data['success'] = '';
         $this->data['notice']  = '';
 
+        if( Auth::isLoggedIn() )
+        {
+            $this->data['username'] = Auth::user();
+        }
+
         View::set($this->data);
     }
 }
