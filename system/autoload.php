@@ -12,8 +12,6 @@ function classLoader($namespace)
 
     $classFile = SYS_PATH . $path . '.php';
 
-    // echo __FUNCTION__ . ': ' . $classFile . '<br/>';
-
     if(is_file($classFile))
     {
         require_once $classFile;
@@ -46,7 +44,25 @@ function modelLoader($class) {
     }
 }
 
+function vendorLoader($class) {
+    $classFile = VENDORS_DIR . $class . '.php';
+
+    if(is_file($classFile)) {
+        require_once $classFile;
+    }
+}
+
+function exceptionLoader($class) {
+    $classFile = SYS_PATH . getFilePath($class) . '.php';
+
+    if(is_file($classFile)) {
+        require_once $classFile;
+    }
+}
+
 spl_autoload_register('classLoader');
 spl_autoload_register('facadeLoader');
 spl_autoload_register('controllerLoader');
 spl_autoload_register('modelLoader');
+spl_autoload_register('vendorLoader');
+spl_autoload_register('exceptionLoader');
