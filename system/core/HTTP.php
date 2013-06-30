@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * HTTP
@@ -10,13 +10,16 @@
  * @copyright   Copyright (c) 2013 - 2014, Ted Mathew dela Cruz.
  * @link        http://core.tedmdelacruz.com
  */
+
+namespace Core;
+
 class Http
 {
     /**
      * HTTP Status errors
      * @var array
      */
-    private static $status = array(
+    private $status = array(
         404 => 'Not Found',
         500 => 'Internal Server Error'
     );
@@ -28,11 +31,11 @@ class Http
      *
      * @param  int $code HTTP status code
      */
-    public static function status_code($code)
+    public function status_code($code)
     {
-        if(isset(self::$status[$code]))
+        if(isset($this->status[$code]))
         {
-            $status = self::$status[$code];
+            $status = $this->status[$code];
         }
         else
         {
@@ -42,7 +45,8 @@ class Http
         header("HTTP/1.0 {$code} {$status}");
     }
 
-    public static function header($content){
+    public function header($content){
         header($content);
+        exit;
     }
 }

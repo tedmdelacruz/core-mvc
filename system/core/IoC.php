@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * Core MVC Inversion of Control Container
@@ -9,6 +9,9 @@
  * @link        http://core.tedmdelacruz.com
  *
  */
+
+namespace Core;
+
 class IoC
 {
     protected $closures = array();

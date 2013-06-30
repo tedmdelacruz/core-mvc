@@ -1,5 +1,4 @@
-<?php namespace Core;
-
+<?php
 /**
  *
  * Asset
@@ -9,6 +8,9 @@
  * @copyright   Copyright (c) 2013 - 2014, Ted Mathew dela Cruz.
  * @link        http://core.tedmdelacruz.com
  */
+
+namespace Core;
+
 class Asset
 {
 
@@ -32,7 +34,7 @@ class Asset
     {
         if(isset($this->assets[$index]))
         {
-            echo base_url($this->assets[$index]);
+            echo \baseUrl($this->assets[$index]);
         }
         else
         {

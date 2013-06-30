@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * Model
@@ -8,6 +8,9 @@
  * @copyright   Copyright (c) 2013 - 2014, Ted Mathew dela Cruz.
  * @link        http://core.tedmdelacruz.com
  */
+
+namespace Core;
+
 class Model
 {
 

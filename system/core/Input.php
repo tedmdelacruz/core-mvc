@@ -1,4 +1,4 @@
-<?php namespace Core;
+<?php
 /**
  *
  * Input
@@ -10,17 +10,36 @@
  * @copyright   Copyright (c) 2013 - 2014, Ted Mathew dela Cruz.
  * @link        http://core.tedmdelacruz.com
  */
+
+namespace Core;
+
 class Input
 {
-    private static $post_data;
+    private $post_data;
 
     public function __construct()
     {
-        self::$post_data = $_POST;
+        $this->post_data = $_POST;
     }
 
-    public static function post($post_index = null)
+    /**
+     * Gets all or one POST data
+     * @param  string $post_index (optional) index of POST data
+     * @return mixed
+     */
+    public function post($post_index = null)
     {
-        return self::$post_data;
+        // If POST index is not defined, return all
+        if( ! $post_index)
+        {
+            return $this->post_data;
+        }
+
+        if( isset($this->post_data[$post_index]) )
+        {
+            return $this->post_data[$post_index];
+        }
+
+        return NULL;
     }
 }
