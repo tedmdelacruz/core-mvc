@@ -19,7 +19,7 @@
         <div class="row">
             <div class="span12">
                 <h2>Login</h2>
-                <form action="<?php echo base_url('user/login') ?>" class="login-form form-horizontal" method="post" autocomplete="off">
+                <form action="<?php echo baseUrl('user/login') ?>" class="login-form form-horizontal" method="post" autocomplete="off">
                     <div class="control-group">
                         <label for="username" class="control-label">Username</label>
                         <div class="controls">
