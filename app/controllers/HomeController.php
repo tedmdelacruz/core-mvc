@@ -1,4 +1,4 @@
-<?php if ( ! defined('SYS_PATH')) exit('No direct script access allowed');
+<?php
 /**
  * Home
  *
